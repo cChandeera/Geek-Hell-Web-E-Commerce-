@@ -8,12 +8,13 @@ dist/
 build/
 *.tsbuildinfo
 
-# Environment variables
+# Environment variables & secrets (All .env files except .env.example)
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+*.env
+!.env.example
+!client/.env.example
+!server/.env.example
 
 # Logs
 logs
@@ -26,6 +27,9 @@ pnpm-debug.log*
 # Editor & OS files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
 .idea/
 .DS_Store
 *.suo
@@ -39,5 +43,5 @@ pnpm-debug.log*
 .vite/
 *.tmp
 
-# Large video files (Optional tracking)
+# Large video files
 *.mp4
