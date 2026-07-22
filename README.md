@@ -6,27 +6,77 @@ Geek Hell is an Awwwards-worthy, luxury e-commerce experience allowing users to 
 
 ---
 
-## 🚀 Tech Stack
+## 💻 Developer Setup & Installation Guide
 
-- **Frontend**: React 19, Vite, Tailwind CSS, TypeScript, React Three Fiber (R3F), Three.js, GSAP, Lenis, Zustand, React Query
-- **Backend**: Node.js, Express.js, MongoDB Atlas, Mongoose, JWT Authentication, Cloudinary, Stripe, Nodemailer
-- **Infrastructure**: Vercel (Frontend), Render (Backend), MongoDB Atlas (Database)
+### Prerequisites
+- **Node.js**: `v20.x` or higher
+- **npm**: `v10.x` or higher
+- **Git**: Installed and configured
+
+### 1. Clone & Install Dependencies
+```bash
+# Clone repository
+git clone https://github.com/YOUR_USERNAME/Geek-Hell.git
+cd Geek-Hell
+
+# Install root orchestrator packages
+npm install
+
+# Install client & server workspace dependencies
+cd client && npm install && cd ..
+cd server && npm install && cd ..
+```
+
+### 2. Environment Variables Configuration
+Copy `.env.example` to `.env` in both client and server directories:
+
+```bash
+# Frontend environment setup
+cp client/.env.example client/.env
+
+# Backend environment setup
+cp server/.env.example server/.env
+```
+
+### 3. Available Development Scripts
+
+| Command | Action |
+| :--- | :--- |
+| `npm run dev` | Launch both Client (Vite) and Server (Express) concurrently |
+| `npm run dev:client` | Launch Vite Frontend dev server (`http://localhost:5173`) |
+| `npm run dev:server` | Launch Express Backend dev server (`http://localhost:5000`) |
+| `npm run build` | Compile TypeScript & build bundle outputs for production |
+| `npm run typecheck` | Run strict TypeScript checks across Client, Server, and Shared |
+| `npm run lint` | Run ESLint static analysis |
+| `npm run format` | Prettify entire codebase |
+| `npm run test` | Run Vitest unit test suites |
 
 ---
 
-## 📐 Architecture & Documentation
+## 📁 Repository Structure Overview
 
-The complete Phase 01 architectural specification and system design can be found in [`implementation_plan.md`](./implementation_plan.md).
+```
+GeekHell/
+├── client/                     # React 19 + Vite Frontend App
+├── server/                     # Node.js + Express REST API Server
+├── shared/                     # Shared Types, DTOs, Schemas & Constants
+├── docs/                       # Architectural Specifications & Technical Guides
+├── e2e/                        # Playwright End-to-End Test Suite
+├── .vscode/                    # VS Code launch debug configurations & tasks
+├── .editorconfig               # Code styling rules
+└── package.json                # Root workspace orchestrator
+```
 
 ---
 
-## 🛠 Project Status
+## 🛠 Project Roadmap & Status
 
-- [x] **Phase 01**: Architecture & System Design
-- [ ] **Phase 02**: Project Scaffolding & Setup
-- [ ] **Phase 03**: Database Models & Auth Backend
-- [ ] **Phase 04**: 3D T-Shirt Designer Engine
-- [ ] **Phase 05**: Storefront & Animation Experience
-- [ ] **Phase 06**: Checkout, Cart & Stripe Integration
-- [ ] **Phase 07**: Admin Dashboard & Analytics
-- [ ] **Phase 08**: Testing & Deployment
+- [x] **Phase 01**: System Architecture & Specification Blueprint
+- [x] **Phase 02**: Repository Scaffolding & Directory Structure
+- [x] **Phase 03**: Development Environment & Shared Infrastructure
+- [ ] **Phase 04**: Database Models & Authentication Engine
+- [ ] **Phase 05**: 3D Garment Customizer & Decal Projection Engine
+- [ ] **Phase 06**: Customer Storefront & GSAP Animation Experience
+- [ ] **Phase 07**: Shopping Cart, Checkout & Stripe Integration
+- [ ] **Phase 08**: Executive Admin Dashboard & Analytics
+- [ ] **Phase 09**: Production Deployment & Performance Tuning

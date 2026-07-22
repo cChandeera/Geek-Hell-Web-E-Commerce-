@@ -1,0 +1,7 @@
+{
+  "name": "@geek-hell/shared",
+  "version": "1.0.0",
+  "private": true,
+  "main": "types/index.ts",
+  "type": "module"
+}
