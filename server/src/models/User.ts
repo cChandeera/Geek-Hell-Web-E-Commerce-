@@ -14,6 +14,11 @@ export interface IUser extends Document {
   wishlist: Types.ObjectId[];
   cart: Types.ObjectId[];
   addresses: IAddress[];
+  refreshTokens?: string[];
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
+  emailVerificationToken?: string;
+  emailVerificationExpires?: Date;
   lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -96,6 +101,27 @@ const userSchema = new Schema<IUser>(
       },
     ],
     addresses: [addressSchema],
+    refreshTokens: {
+      type: [String],
+      default: [],
+      select: false,
+    },
+    passwordResetToken: {
+      type: String,
+      select: false,
+    },
+    passwordResetExpires: {
+      type: Date,
+      select: false,
+    },
+    emailVerificationToken: {
+      type: String,
+      select: false,
+    },
+    emailVerificationExpires: {
+      type: Date,
+      select: false,
+    },
     lastLogin: {
       type: Date,
     },
@@ -105,14 +131,14 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-// Pre-save hook for bcrypt password hashing
+// Pre-save hook for bcrypt password hashing with 12 salt rounds
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password') || !this.password) {
     return next();
   }
 
   try {
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
