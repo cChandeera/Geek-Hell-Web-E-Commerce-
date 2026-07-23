@@ -48,7 +48,9 @@ const customDesignSchema = new Schema<ICustomDesign>(
     },
     hexColor: {
       type: String,
-      default: '#09090b',
+      default: function (this: ICustomDesign) {
+        return this.shirtColor || '#09090b';
+      },
     },
     designImage: {
       type: Schema.Types.Mixed,
@@ -95,7 +97,7 @@ customDesignSchema.virtual('productId').get(function () {
 });
 
 // Pre-validate hook to support alias input mappings
-customDesignSchema.pre('validate', function (next) {
+customDesignSchema.pre('validate', function () {
   if (!this.user && (this as unknown as { userId?: Types.ObjectId }).userId) {
     this.user = (this as unknown as { userId: Types.ObjectId }).userId;
   }
@@ -105,7 +107,6 @@ customDesignSchema.pre('validate', function (next) {
   if (!this.hexColor && this.shirtColor) {
     this.hexColor = this.shirtColor;
   }
-  next();
 });
 
 export const CustomDesign = model<ICustomDesign>('CustomDesign', customDesignSchema);

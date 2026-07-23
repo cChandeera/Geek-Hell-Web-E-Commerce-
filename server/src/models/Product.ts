@@ -33,15 +33,6 @@ export interface IProduct extends Document {
   updatedAt: Date;
 }
 
-const imageAssetSchema = new Schema<IImageAsset>(
-  {
-    publicId: { type: String, default: '' },
-    url: { type: String, required: [true, 'Image URL is required'] },
-    thumbnail: { type: String, default: '' },
-  },
-  { _id: false }
-);
-
 const seoSchema = new Schema<ISEO>(
   {
     metaTitle: { type: String, default: '', trim: true },
@@ -62,11 +53,19 @@ const productSchema = new Schema<IProduct>(
     },
     slug: {
       type: String,
-      required: [true, 'Slug is required'],
       unique: true,
       lowercase: true,
       trim: true,
       index: true,
+      default: function (this: IProduct) {
+        if (this.name) {
+          return this.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)+/g, '');
+        }
+        return undefined;
+      },
     },
     description: {
       type: String,
@@ -175,8 +174,8 @@ productSchema.virtual('sizes').get(function () {
   return this.availableSizes;
 });
 
-// Pre-validate hook for auto-generating slug if not provided
-productSchema.pre('validate', function (next) {
+// Sync pre-validate hook for fallback
+productSchema.pre('validate', function () {
   if (this.name && !this.slug) {
     this.slug = this.name
       .toLowerCase()
@@ -186,7 +185,6 @@ productSchema.pre('validate', function (next) {
   if (this.basePrice === undefined && (this as unknown as { price?: number }).price !== undefined) {
     this.basePrice = (this as unknown as { price: number }).price;
   }
-  next();
 });
 
 export const Product = model<IProduct>('Product', productSchema);

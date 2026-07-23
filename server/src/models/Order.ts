@@ -72,6 +72,12 @@ const orderItemSchema = new Schema<IOrderItem>(
   { _id: true }
 );
 
+const generateOrderNumber = (): string => {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const randomHex = Math.floor(Math.random() * 16777215).toString(16).toUpperCase().padStart(4, '0');
+  return `GH-${timestamp}-${randomHex}`;
+};
+
 const orderSchema = new Schema<IOrder>(
   {
     user: {
@@ -82,11 +88,11 @@ const orderSchema = new Schema<IOrder>(
     },
     orderNumber: {
       type: String,
-      required: [true, 'Order number is required'],
       unique: true,
       uppercase: true,
       trim: true,
       index: true,
+      default: generateOrderNumber,
     },
     items: {
       type: [orderItemSchema],
@@ -158,17 +164,14 @@ const orderSchema = new Schema<IOrder>(
   }
 );
 
-// Pre-validate hook to generate unique order number if missing
-orderSchema.pre('validate', function (next) {
+// Pre-validate hook
+orderSchema.pre('validate', function () {
   if (!this.orderNumber) {
-    const timestamp = Date.now().toString(36).toUpperCase();
-    const randomHex = Math.floor(Math.random() * 16777215).toString(16).toUpperCase().padStart(4, '0');
-    this.orderNumber = `GH-${timestamp}-${randomHex}`;
+    this.orderNumber = generateOrderNumber();
   }
   if (this.subtotal !== undefined && this.total === undefined) {
     this.total = Number((this.subtotal + (this.shippingCost || 0) + (this.tax || 0) - (this.discount || 0)).toFixed(2));
   }
-  next();
 });
 
 export const Order = model<IOrder>('Order', orderSchema);
