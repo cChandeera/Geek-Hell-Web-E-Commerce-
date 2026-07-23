@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 export const AdminSettingsPage: React.FC = () => {
   const [brandName, setBrandName] = useState('GEEK HELL');
   const [contactEmail, setContactEmail] = useState('support@geekhell.com');
-  const [currency, setCurrency] = useState('USD');
+  const [currency, setCurrency] = useState('LKR');
   const [taxRate, setTaxRate] = useState(8);
 
   const handleSave = () => {
@@ -48,6 +48,7 @@ export const AdminSettingsPage: React.FC = () => {
               onChange={(e) => setCurrency(e.target.value)}
               className="w-full bg-zinc-900 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:border-red-500 focus:outline-none"
             >
+              <option value="LKR">LKR (Rs.)</option>
               <option value="USD">USD ($)</option>
               <option value="EUR">EUR (€)</option>
               <option value="GBP">GBP (£)</option>

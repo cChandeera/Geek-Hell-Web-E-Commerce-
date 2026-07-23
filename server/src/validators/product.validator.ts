@@ -9,7 +9,7 @@ export const createProductSchema = z.object({
   brand: z.string().default('Geek Hell'),
   basePrice: z.number().min(0, 'Base price cannot be negative'),
   discountPrice: z.number().min(0, 'Discount price cannot be negative').optional().default(0),
-  currency: z.string().default('USD'),
+  currency: z.string().default('LKR'),
   gender: z.enum(['men', 'women', 'unisex']).default('unisex'),
   availableColors: z.array(z.string()).default(['#09090b', '#ffffff', '#ed1d24', '#0476f2']),
   availableSizes: z.array(z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL'])).default(['S', 'M', 'L', 'XL']),

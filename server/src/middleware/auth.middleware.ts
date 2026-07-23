@@ -11,6 +11,16 @@ export const authenticate = (req: Request, _res: Response, next: NextFunction) =
 
   const token = authHeader.split(' ')[1];
 
+  // Dev bypass for local development dashboard testing
+  if (process.env.NODE_ENV === 'development' && token === 'dev-admin-token') {
+    req.user = {
+      id: '660000000000000000000000',
+      email: 'admin@geekhell.com',
+      role: 'admin',
+    };
+    return next();
+  }
+
   try {
     const decoded = verifyAccessToken(token);
     req.user = decoded;

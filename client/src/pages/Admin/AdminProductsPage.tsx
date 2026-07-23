@@ -54,7 +54,7 @@ export const AdminProductsPage: React.FC = () => {
     },
     {
       header: 'Base Price',
-      accessor: (product) => <span className="font-bold text-white">${product.basePrice}</span>,
+      accessor: (product) => <span className="font-bold text-white">Rs. {product.basePrice}</span>,
     },
     {
       header: 'Stock Inventory',

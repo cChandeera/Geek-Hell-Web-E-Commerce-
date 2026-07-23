@@ -2,6 +2,7 @@ import { Router } from 'express';
 import authRoutes from './auth.routes';
 import productRoutes from './product.routes';
 import customizationRoutes from './customization.routes';
+import categoryRoutes from './category.routes';
 import { ApiResponse } from '../utils/ApiResponse';
 
 const router = Router();
@@ -21,5 +22,6 @@ router.get('/health', (_req, res) => {
 router.use('/auth', authRoutes);
 router.use('/products', productRoutes);
 router.use('/customizations', customizationRoutes);
+router.use('/categories', categoryRoutes);
 
 export default router;

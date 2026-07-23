@@ -38,7 +38,7 @@ export const AdminCouponsPage: React.FC = () => {
       header: 'Discount Value',
       accessor: (c) => (
         <span className="font-extrabold text-amber-400">
-          {c.discountType === 'percentage' ? `${c.value}% OFF` : `$${c.value} OFF`}
+          {c.discountType === 'percentage' ? `${c.value}% OFF` : `Rs. ${c.value} OFF`}
         </span>
       ),
     },
@@ -102,7 +102,7 @@ export const AdminCouponsPage: React.FC = () => {
                 className="w-full bg-zinc-900 border border-zinc-700 text-white rounded-xl px-4 py-2.5 text-sm focus:border-amber-500 focus:outline-none"
               >
                 <option value="percentage">Percentage (%)</option>
-                <option value="fixed">Fixed Amount ($)</option>
+                <option value="fixed">Fixed Amount (Rs.)</option>
               </select>
             </div>
             <div>

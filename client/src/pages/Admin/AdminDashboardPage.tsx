@@ -52,7 +52,7 @@ export const AdminDashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <AdminCard
           title="Total Revenue"
-          value={`$${metrics?.totalRevenue.toLocaleString() || '124,850'}`}
+          value={`Rs. ${metrics?.totalRevenue.toLocaleString() || '124,850'}`}
           change="+18.4%"
           isPositive={true}
           icon={<DollarSign className="w-5 h-5 text-red-400" />}
@@ -60,7 +60,7 @@ export const AdminDashboardPage: React.FC = () => {
         />
         <AdminCard
           title="Today's Revenue"
-          value={`$${metrics?.todayRevenue.toLocaleString() || '3,420'}`}
+          value={`Rs. ${metrics?.todayRevenue.toLocaleString() || '3,420'}`}
           change="+8.2%"
           isPositive={true}
           icon={<DollarSign className="w-5 h-5 text-blue-400" />}
@@ -105,7 +105,7 @@ export const AdminDashboardPage: React.FC = () => {
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="name" stroke="#71717a" fontSize={12} tickLine={false} />
-                <YAxis stroke="#71717a" fontSize={12} tickLine={false} tickFormatter={(v) => `$${v}`} />
+                <YAxis stroke="#71717a" fontSize={12} tickLine={false} tickFormatter={(v) => `Rs. ${v}`} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '12px', color: '#fff' }}
                 />
@@ -159,7 +159,7 @@ export const AdminDashboardPage: React.FC = () => {
                   <div className="text-xs text-zinc-400">{order.user?.name || 'Customer'}</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-extrabold text-white text-sm">${order.total}</div>
+                  <div className="font-extrabold text-white text-sm">Rs. {order.total}</div>
                   <AdminBadge
                     variant={
                       order.orderStatus === 'delivered'

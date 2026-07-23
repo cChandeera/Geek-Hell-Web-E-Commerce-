@@ -146,7 +146,7 @@ export const AdminProductEditPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">Base Price ($)</label>
+              <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">Base Price (Rs.)</label>
               <input
                 type="number"
                 step="0.01"

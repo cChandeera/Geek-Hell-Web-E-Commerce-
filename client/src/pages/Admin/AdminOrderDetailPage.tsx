@@ -129,9 +129,9 @@ export const AdminOrderDetailPage: React.FC = () => {
                     <td className="p-4">
                       <div className="w-5 h-5 rounded-full border border-zinc-700 shadow-sm" style={{ backgroundColor: item.color }} />
                     </td>
-                    <td className="p-4">${item.price}</td>
+                    <td className="p-4">Rs. {item.price}</td>
                     <td className="p-4 font-mono">{item.quantity}</td>
-                    <td className="p-4 text-right font-extrabold text-white">${item.subtotal}</td>
+                    <td className="p-4 text-right font-extrabold text-white">Rs. {item.subtotal}</td>
                   </tr>
                 ))}
               </tbody>
@@ -144,19 +144,19 @@ export const AdminOrderDetailPage: React.FC = () => {
           <div className="w-full max-w-xs space-y-2 text-xs">
             <div className="flex justify-between text-zinc-400">
               <span>Subtotal:</span>
-              <span>${order.subtotal}</span>
+              <span>Rs. {order.subtotal}</span>
             </div>
             <div className="flex justify-between text-zinc-400">
               <span>Shipping Fee:</span>
-              <span>${order.shippingCost}</span>
+              <span>Rs. {order.shippingCost}</span>
             </div>
             <div className="flex justify-between text-zinc-400">
               <span>Estimated Tax:</span>
-              <span>${order.tax}</span>
+              <span>Rs. {order.tax}</span>
             </div>
             <div className="flex justify-between text-base font-extrabold text-white pt-2 border-t border-zinc-800">
               <span>Total Amount:</span>
-              <span className="text-red-500">${order.total}</span>
+              <span className="text-red-500">Rs. {order.total}</span>
             </div>
           </div>
         </div>

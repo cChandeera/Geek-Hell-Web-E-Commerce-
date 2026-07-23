@@ -45,7 +45,7 @@ export const AdminOrdersPage: React.FC = () => {
     },
     {
       header: 'Total Amount',
-      accessor: (order) => <span className="font-extrabold text-white">${order.total}</span>,
+      accessor: (order) => <span className="font-extrabold text-white">Rs. {order.total}</span>,
     },
     {
       header: 'Payment Status',

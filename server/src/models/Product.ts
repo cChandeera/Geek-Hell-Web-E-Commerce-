@@ -99,7 +99,7 @@ const productSchema = new Schema<IProduct>(
     },
     currency: {
       type: String,
-      default: 'USD',
+      default: 'LKR',
       trim: true,
     },
     gender: {
