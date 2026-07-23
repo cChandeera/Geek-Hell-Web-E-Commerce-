@@ -187,4 +187,12 @@ productSchema.pre('validate', function () {
   }
 });
 
+// Indexes for filtering and sorting optimization
+productSchema.index({ basePrice: 1 });
+productSchema.index({ rating: -1 });
+productSchema.index({ reviewCount: -1 });
+productSchema.index({ createdAt: -1 });
+productSchema.index({ availableColors: 1 });
+productSchema.index({ availableSizes: 1 });
+
 export const Product = model<IProduct>('Product', productSchema);

@@ -1,6 +1,10 @@
 import { Schema, model, Document, Types } from 'mongoose';
 import { IAddress } from '../types/models';
 import { addressSchema } from './User';
+import { Product } from './Product';
+import { ApiError } from '../utils/ApiError';
+import { logger } from '../utils/logger';
+
 
 export interface IOrderItem {
   product: Types.ObjectId;
@@ -174,4 +178,65 @@ orderSchema.pre('validate', function () {
   }
 });
 
+// Pre-save hook to validate stock and update inventory
+orderSchema.pre('save', async function (next) {
+  const LOW_STOCK_THRESHOLD = 5;
+
+  try {
+    if (this.isNew) {
+      for (const item of this.items) {
+        const product = await Product.findById(item.product);
+        if (!product) {
+          return next(new ApiError(404, `Product not found with ID ${item.product}`));
+        }
+
+        if (!product.isActive) {
+          return next(new ApiError(400, `Product '${product.name}' is inactive and cannot be purchased.`));
+        }
+
+        if (product.stock < item.quantity) {
+          return next(
+            new ApiError(
+              400,
+              `Insufficient stock for product '${product.name}'. Available: ${product.stock}, Requested: ${item.quantity}`
+            )
+          );
+        }
+
+        // Deduct stock
+        product.stock -= item.quantity;
+
+        // Handle alerts
+        if (product.stock === 0) {
+          logger.warn(`[Out of Stock Alert] Product '${product.name}' (ID: ${product._id}) is now out of stock.`);
+        } else if (product.stock <= LOW_STOCK_THRESHOLD) {
+          logger.warn(
+            `[Low Stock Alert] Product '${product.name}' (ID: ${product._id}) is low on stock: ${product.stock} left.`
+          );
+        }
+
+        await product.save();
+      }
+    } else if (this.isModified('orderStatus')) {
+      // If order status is changed to cancelled, restore stock
+      if (this.orderStatus === 'cancelled') {
+        for (const item of this.items) {
+          const product = await Product.findById(item.product);
+          if (product) {
+            product.stock += item.quantity;
+            await product.save();
+            logger.info(
+              `[Stock Restored] Restored ${item.quantity} units for product '${product.name}' (ID: ${product._id}) due to order cancellation.`
+            );
+          }
+        }
+      }
+    }
+    next();
+  } catch (err) {
+    next(err as any);
+  }
+});
+
 export const Order = model<IOrder>('Order', orderSchema);
+

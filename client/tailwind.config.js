@@ -6,48 +6,49 @@ export default {
     extend: {
       colors: {
         background: {
-          DEFAULT: '#09090b', // Ultra dark obsidian background
-          surface: '#121215',    // Card & surface elevation
-          glass: 'rgba(18, 18, 21, 0.65)',
+          DEFAULT: 'var(--color-black)',
+          surface: 'var(--color-surface)',
+          hover: 'var(--color-surface-hover)',
+          glass: 'rgba(14, 14, 17, 0.70)',
         },
         primary: {
-          DEFAULT: '#e50914', // Core Geek Hell Red
-          hover: '#b80710',
-          glow: 'rgba(229, 9, 20, 0.4)',
+          DEFAULT: 'var(--color-marvel-red)',
+          hover: 'var(--color-marvel-hover)',
+          glow: 'var(--color-marvel-glow)',
         },
         secondary: {
-          DEFAULT: '#00d2ff', // Cyber DC Blue
-          hover: '#0099bc',
-          glow: 'rgba(0, 210, 255, 0.4)',
+          DEFAULT: 'var(--color-dc-blue)',
+          hover: 'var(--color-dc-hover)',
+          glow: 'var(--color-dc-glow)',
         },
         accent: {
-          marvel: '#ed1d24', // Marvel Vibrant Red
-          dc: '#0476f2',     // DC Royal Blue
-          gold: '#f5c518',   // Collector's Gold
+          marvel: 'var(--color-marvel-red)',
+          dc: 'var(--color-dc-blue)',
+          gold: 'var(--color-gold)',
         },
         surface: {
-          100: '#18181b',
-          200: '#27272a',
-          300: '#3f3f46',
-          border: 'rgba(255, 255, 255, 0.08)',
+          100: '#121215',
+          200: '#1c1c21',
+          300: '#2b2b35',
+          border: 'var(--color-border)',
         },
         text: {
-          primary: '#f4f4f5',
-          secondary: '#a1a1aa',
-          muted: '#71717a',
+          primary: 'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
+          muted: 'var(--color-text-muted)',
         },
-        success: '#10b981',
-        danger: '#ef4444',
-        warning: '#f59e0b',
+        success: 'var(--color-success)',
+        danger: 'var(--color-danger)',
+        warning: 'var(--color-warning)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['Outfit', 'Inter', 'sans-serif'],
       },
       boxShadow: {
-        glass: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-        'marvel-glow': '0 0 25px rgba(237, 29, 36, 0.35)',
-        'dc-glow': '0 0 25px rgba(4, 118, 242, 0.35)',
+        glass: 'var(--shadow-glass)',
+        'marvel-glow': 'var(--shadow-marvel-glow)',
+        'dc-glow': 'var(--shadow-dc-glow)',
         'gold-glow': '0 0 20px rgba(245, 197, 24, 0.25)',
       },
       backdropBlur: {
