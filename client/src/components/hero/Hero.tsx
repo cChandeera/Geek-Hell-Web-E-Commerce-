@@ -1,84 +1,123 @@
-import React, { useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Zap, Target, Play } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { Button } from '../common/Button';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { ShirtViewer } from '../common/shirt/ShirtViewer';
 
 export const Hero: React.FC = () => {
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const tl = gsap.timeline();
+  const reducedMotion = useReducedMotion();
+  const floatRef = useRef<HTMLDivElement>(null);
 
-      // Initial state hide
-      gsap.set('.gsap-hero-glow-marvel', { opacity: 0, scale: 0.8 });
-      gsap.set('.gsap-hero-glow-dc', { opacity: 0, scale: 0.8 });
+  // useGSAP safe scope timelines
+  useGSAP(() => {
+    if (reducedMotion) {
+      gsap.set('.gsap-hero-glow-marvel', { opacity: 0.15, scale: 1 });
+      gsap.set('.gsap-hero-glow-dc', { opacity: 0.15, scale: 1 });
+      gsap.set('.gsap-hero-badge', { y: 0, opacity: 1 });
+      gsap.set('.gsap-hero-title-part', { y: 0, opacity: 1, scale: 1 });
+      gsap.set('.gsap-hero-subtitle', { y: 0, opacity: 1 });
+      gsap.set('.gsap-hero-btn', { scale: 1, opacity: 1 });
+      gsap.set('.gsap-hero-customizer', { scale: 1, opacity: 1 });
+      return;
+    }
 
-      // Staggered reveals
-      tl.to('.gsap-hero-glow-marvel', {
+    const tl = gsap.timeline();
+
+    // Initial state hide
+    gsap.set('.gsap-hero-glow-marvel', { opacity: 0, scale: 0.8 });
+    gsap.set('.gsap-hero-glow-dc', { opacity: 0, scale: 0.8 });
+
+    // Spotlights reveals
+    tl.to('.gsap-hero-glow-marvel', {
+      opacity: 0.15,
+      scale: 1,
+      duration: 2.5,
+      ease: 'power3.out',
+    });
+    tl.to(
+      '.gsap-hero-glow-dc',
+      {
         opacity: 0.15,
         scale: 1,
         duration: 2.5,
         ease: 'power3.out',
+      },
+      '-=2.0'
+    );
+
+    // Premium Badge fades in
+    tl.fromTo(
+      '.gsap-hero-badge',
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
+      '-=2.0'
+    );
+
+    // Title line-by-line reveal
+    tl.fromTo(
+      '.gsap-hero-title-part',
+      { y: 65, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        stagger: 0.15,
+        ease: 'power4.out',
+      },
+      '-=1.6'
+    );
+
+    // "INNER" text scaling
+    tl.fromTo(
+      '.gsap-hero-title-inner',
+      { scale: 0.9 },
+      { scale: 1.03, duration: 1.2, ease: 'back.out(1.5)' },
+      '-=1.2'
+    );
+
+    // Paragraph fades upward
+    tl.fromTo(
+      '.gsap-hero-subtitle',
+      { y: 35, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
+      '-=1.0'
+    );
+
+    // Buttons reveal staggered
+    tl.fromTo(
+      '.gsap-hero-btn',
+      { scale: 0.9, opacity: 0 },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'back.out(1.5)',
+      },
+      '-=0.8'
+    );
+
+    // 3D Canvas Preview scales & fades in
+    tl.fromTo(
+      '.gsap-hero-customizer',
+      { scale: 0.9, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 1.0, ease: 'power3.out' },
+      '-=0.8'
+    );
+
+    // Infinite GSAP floating animation loop
+    if (floatRef.current) {
+      gsap.to(floatRef.current, {
+        y: -12,
+        duration: 3,
+        repeat: -1,
+        yoyo: true,
+        ease: 'power1.inOut',
       });
-      tl.to(
-        '.gsap-hero-glow-dc',
-        {
-          opacity: 0.15,
-          scale: 1,
-          duration: 2.5,
-          ease: 'power3.out',
-        },
-        '-=2.0'
-      );
-
-      tl.fromTo(
-        '.gsap-hero-badge',
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
-        '-=2.0'
-      );
-
-      tl.fromTo(
-        '.gsap-hero-title-part',
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.0,
-          stagger: 0.15,
-          ease: 'power4.out',
-        },
-        '-=1.6'
-      );
-
-      tl.fromTo(
-        '.gsap-hero-subtitle',
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
-        '-=1.0'
-      );
-
-      tl.fromTo(
-        '.gsap-hero-btn',
-        { scale: 0.9, opacity: 0 },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: 'back.out(1.5)',
-        },
-        '-=0.8'
-      );
-
-      tl.fromTo(
-        '.gsap-hero-customizer',
-        { scale: 0.9, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.0, ease: 'power3.out' },
-        '-=0.8'
-      );
     }
-  }, []);
+  }, { dependencies: [reducedMotion] });
 
   return (
     <section className="relative min-h-screen bg-[#050507] text-white flex flex-col items-center justify-center overflow-hidden px-6 pt-24 pb-16">
@@ -107,7 +146,7 @@ export const Hero: React.FC = () => {
             <span className="gsap-hero-title-part block text-white">
               Unleash Your
             </span>
-            <span className="gsap-hero-title-part block text-accent-marvel text-glow-marvel my-1">
+            <span className="gsap-hero-title-part gsap-hero-title-inner block text-accent-marvel text-glow-marvel my-1 origin-center">
               Inner
             </span>
             <span className="gsap-hero-title-part block text-white">
@@ -152,56 +191,26 @@ export const Hero: React.FC = () => {
           </div>
         </div>
 
-        {/* 3D T-Shirt Interactive Placeholder */}
+        {/* 3D T-Shirt Floating Preview */}
         <div className="gsap-hero-customizer flex items-center justify-center relative select-none w-full">
-          <motion.div
-            animate={{
-              y: [0, -12, 0],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-            className="w-full max-w-[420px]"
+          <div
+            ref={floatRef}
+            className="w-full max-w-[480px] aspect-[4/5] relative"
           >
-            <div className="glass-card shadow-glass border-white/5 relative p-12 aspect-[4/5] rounded-3xl flex flex-col items-center justify-center overflow-hidden group">
-              {/* Internal Subtle Spotlight lighting */}
-              <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-secondary/10 opacity-60 pointer-events-none" />
-
-              {/* T-Shirt Vector Layout */}
-              <svg
-                viewBox="0 0 100 100"
-                className="w-48 h-48 text-text-secondary/20 group-hover:text-text-secondary/35 group-hover:scale-105 transition-all duration-700 pointer-events-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
-              >
-                <path
-                  fill="currentColor"
-                  d="M10,25 C15,22 25,23 30,28 C32,25 35,22 45,22 C55,22 58,25 60,28 C65,23 75,22 80,25 L90,40 L78,48 L75,42 L75,85 C75,90 70,92 65,92 L25,92 C20,92 15,90 15,85 L15,42 L12,48 L0,40 Z"
-                />
-              </svg>
-
-              {/* Holographic custom target selectors */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
-                <span className="absolute w-8 h-8 rounded-full border border-primary/40 animate-ping" />
-                <span className="absolute w-4 h-4 rounded-full border-2 border-primary shadow-marvel-glow flex items-center justify-center">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                </span>
-              </div>
-
-              {/* Card Footer Tag */}
-              <div className="absolute bottom-6 flex flex-col items-center gap-1.5 text-center">
-                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-primary text-glow-marvel">
-                  Interactive customizer
-                </span>
-                <span className="text-[11px] font-semibold text-text-secondary uppercase">
-                  3D Render Engine Sandbox
-                </span>
-              </div>
+            {/* Soft red radial glow behind the shirt */}
+            <div className="absolute inset-0 pointer-events-none z-0">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] rounded-full bg-[rgba(229,9,20,0.08)] blur-[80px]" />
+              <div className="absolute top-[60%] left-[30%] -translate-x-1/2 -translate-y-1/2 w-[40%] h-[40%] rounded-full bg-[rgba(4,118,242,0.06)] blur-[60px]" />
             </div>
-          </motion.div>
+            {/* 3D Canvas */}
+            <div className="relative z-10 w-full h-full">
+              <ShirtViewer fallbackColorTheme="default" />
+            </div>
+          </div>
         </div>
 
       </div>
     </section>
   );
 };
+export default Hero;

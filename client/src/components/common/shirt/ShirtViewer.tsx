@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode, Suspense } from 'react';
 import { ShirtCanvas } from './ShirtCanvas';
 import { Loader } from '../Loader';
 
@@ -27,6 +27,16 @@ class CanvasErrorBoundary extends Component<
   }
 }
 
+/** Fallback shown while the Canvas + GLB are loading via Suspense */
+const CanvasLoadingFallback: React.FC<{ themeColor: 'marvel' | 'dc' | 'default' }> = ({ themeColor }) => (
+  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 select-none">
+    <Loader variant="pulse-ring" size="md" themeColor={themeColor} />
+    <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-text-secondary/60">
+      Loading 3D Model…
+    </span>
+  </div>
+);
+
 export interface ShirtViewerProps {
   className?: string;
   fallbackColorTheme?: 'marvel' | 'dc' | 'default';
@@ -50,15 +60,12 @@ export const ShirtViewer: React.FC<ShirtViewerProps> = ({
           </div>
         }
       >
-        {/* Loader shown during glb model network buffer loading */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none bg-transparent">
-          <Loader variant="pulse-ring" size="md" themeColor={fallbackColorTheme} />
-        </div>
-        
-        {/* 3D Canvas element overlay */}
-        <div className="w-full h-full relative z-10">
-          <ShirtCanvas />
-        </div>
+        {/* React Suspense wraps the entire Canvas so the loader shows INSTEAD of the canvas until ready */}
+        <Suspense fallback={<CanvasLoadingFallback themeColor={fallbackColorTheme} />}>
+          <div className="w-full h-full relative z-10">
+            <ShirtCanvas />
+          </div>
+        </Suspense>
       </CanvasErrorBoundary>
     </div>
   );

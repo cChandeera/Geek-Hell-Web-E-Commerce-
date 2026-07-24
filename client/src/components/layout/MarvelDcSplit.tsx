@@ -1,9 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { Button } from '../common/Button';
 import { cn } from '../../utils/cn';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export interface SplitPaneData {
   id: string;
@@ -31,7 +35,7 @@ const DEFAULT_PANES: SplitPaneData[] = [
     description: 'Iron Man. Spider-Man. Avengers. Every legend, every story. Wear your universe.',
     countText: '180+ Designs Available',
     buttonText: 'Explore Marvel',
-    imageUrl: 'https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=1974&auto=format&fit=crop', // High-res cinematic Spider-Man suit theme placeholder
+    imageUrl: 'https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=1974&auto=format&fit=crop',
     link: '/collections/marvel',
   },
   {
@@ -42,7 +46,7 @@ const DEFAULT_PANES: SplitPaneData[] = [
     description: 'Batman. Wonder Woman. Superman. The greatest heroes demand premium gear.',
     countText: '160+ Designs Available',
     buttonText: 'Explore DC',
-    imageUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094&auto=format&fit=crop', // High-res dark ambient neon theme placeholder
+    imageUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094&auto=format&fit=crop',
     link: '/collections/dc',
   },
 ];
@@ -53,76 +57,85 @@ export const MarvelDcSplit: React.FC<MarvelDcSplitProps> = ({
 }) => {
   const [hoveredSide, setHoveredSide] = useState<'none' | 'marvel' | 'dc'>('none');
   const sectionRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
-  // GSAP Entrance reveal animations on scroll / intersection
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
+  // ScrollTrigger layout timelines in useGSAP
+  useGSAP(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const leftPane = section.querySelector('.gsap-split-marvel');
-    const rightPane = section.querySelector('.gsap-split-dc');
-    const leftInner = section.querySelector('.gsap-split-marvel-inner');
-    const rightInner = section.querySelector('.gsap-split-dc-inner');
-
-    // Setup initial hidden states
-    gsap.set(section, { opacity: 0 });
-    if (leftInner && rightInner) {
-      gsap.set(leftInner, { y: 40, opacity: 0 });
-      gsap.set(rightInner, { y: 40, opacity: 0 });
+    if (reducedMotion) {
+      gsap.set(section, { opacity: 1 });
+      gsap.set('.gsap-split-marvel', { x: 0, opacity: 1 });
+      gsap.set('.gsap-split-dc', { x: 0, opacity: 1 });
+      gsap.set('.gsap-split-marvel-inner', { y: 0, opacity: 1 });
+      gsap.set('.gsap-split-dc-inner', { y: 0, opacity: 1 });
+      gsap.set('.gsap-split-btn', { opacity: 1 });
+      return;
     }
 
-    // Simple Observer implementation for fade-in on scroll
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const tl = gsap.timeline();
-            
-            tl.to(section, {
-              opacity: 1,
-              duration: 0.8,
-              ease: 'power2.out',
-            });
+    // Set initial hidden properties
+    gsap.set(section, { opacity: 0 });
+    gsap.set('.gsap-split-marvel', { x: -160, opacity: 0 });
+    gsap.set('.gsap-split-dc', { x: 160, opacity: 0 });
+    gsap.set('.gsap-split-marvel-inner', { y: 30, opacity: 0 });
+    gsap.set('.gsap-split-dc-inner', { y: 30, opacity: 0 });
+    gsap.set('.gsap-split-btn', { opacity: 0 });
 
-            if (leftPane && rightPane && leftInner && rightInner) {
-              tl.fromTo(
-                [leftPane, rightPane],
-                { scaleY: 0 },
-                {
-                  scaleY: 1,
-                  duration: 1.0,
-                  stagger: 0.15,
-                  ease: 'power3.inOut',
-                  transformOrigin: 'top',
-                },
-                '-=0.4'
-              );
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 80%',
+        end: 'bottom 20%',
+        toggleActions: 'play none none none',
+      }
+    });
 
-              tl.to(
-                [leftInner, rightInner],
-                {
-                  y: 0,
-                  opacity: 1,
-                  duration: 0.8,
-                  stagger: 0.1,
-                  ease: 'power2.out',
-                },
-                '-=0.4'
-              );
-            }
+    tl.to(section, { opacity: 1, duration: 0.1 });
 
-            observer.unobserve(section);
-          }
-        });
+    tl.to('.gsap-split-marvel', {
+      x: 0,
+      opacity: 1,
+      duration: 1.0,
+      ease: 'power3.out'
+    });
+
+    tl.to('.gsap-split-dc', {
+      x: 0,
+      opacity: 1,
+      duration: 1.0,
+      ease: 'power3.out'
+    }, '-=0.8');
+
+    tl.to(
+      ['.gsap-split-marvel-inner', '.gsap-split-dc-inner'],
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power2.out'
       },
-      { threshold: 0.1 }
+      '-=0.6'
     );
 
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
+    tl.to('.gsap-split-btn', {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.out'
+    }, '-=0.4');
+
+    // Ken Burns scroll parallax zooming on background images
+    gsap.to('.gsap-split-bg', {
+      scale: 1.15,
+      scrollTrigger: {
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+      }
+    });
+  }, { dependencies: [reducedMotion] });
 
   return (
     <div
@@ -136,25 +149,24 @@ export const MarvelDcSplit: React.FC<MarvelDcSplitProps> = ({
         const isAnyHovered = hoveredSide !== 'none';
         
         return (
-          <motion.div
+          <div
             key={pane.id}
-            layout
             onMouseEnter={() => setHoveredSide(sideKey)}
             onMouseLeave={() => setHoveredSide('none')}
             className={cn(
               'relative h-[50vh] md:h-full flex-1 overflow-hidden transition-all duration-700 ease-out group',
-              isMarvel ? 'gsap-split-marvel border-b md:border-b-0 md:border-r border-surface-border/50' : 'gsap-split-dc'
+              isMarvel 
+                ? 'gsap-split-marvel border-b md:border-b-0 md:border-r border-surface-border/50' 
+                : 'gsap-split-dc'
             )}
             style={{
-              flexGrow: isHovered ? 1.85 : isAnyHovered ? 0.85 : 1, // Translates to roughly 65% / 35% on hover
+              flexGrow: isHovered ? 1.85 : isAnyHovered ? 0.85 : 1,
             }}
           >
             {/* Background Image Placeholder with slow scale Ken Burns effect */}
             <div className="absolute inset-0 z-0">
               <div
-                className={cn(
-                  'w-full h-full bg-cover bg-center transition-transform duration-[12s] ease-out scale-105 group-hover:scale-115 opacity-30 group-hover:opacity-40 filter grayscale contrast-125'
-                )}
+                className="gsap-split-bg w-full h-full bg-cover bg-center transition-all duration-700 opacity-30 group-hover:opacity-40 filter grayscale contrast-125 scale-105 group-hover:scale-110"
                 style={{
                   backgroundImage: `url(${pane.imageUrl})`,
                 }}
@@ -228,7 +240,7 @@ export const MarvelDcSplit: React.FC<MarvelDcSplitProps> = ({
                 <Button
                   variant={isMarvel ? 'marvel' : 'dc'}
                   onClick={() => onCtaClick?.(pane.franchise, pane.link)}
-                  className="group-hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg"
+                  className="gsap-split-btn shadow-lg"
                   rightIcon={
                     <ArrowRight className="w-4 h-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" />
                   }
@@ -237,9 +249,10 @@ export const MarvelDcSplit: React.FC<MarvelDcSplitProps> = ({
                 </Button>
               </div>
             </div>
-          </motion.div>
+          </div>
         );
       })}
     </div>
   );
 };
+export default MarvelDcSplit;

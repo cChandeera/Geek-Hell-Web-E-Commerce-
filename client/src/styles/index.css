@@ -101,3 +101,24 @@
     box-shadow: var(--shadow-dc-glow);
   }
 }
+
+/* Premium Click Ripples */
+@keyframes ripple-effect {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple-effect 0.6s ease-out;
+  background-color: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}

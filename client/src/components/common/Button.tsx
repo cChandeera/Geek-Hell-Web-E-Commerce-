@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
 import { cn } from '../../utils/cn';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -7,6 +7,13 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+}
+
+interface Ripple {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -21,19 +28,49 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       children,
       type = 'button',
+      onMouseDown,
       ...props
     },
     ref
   ) => {
-    const baseStyles = 'inline-flex items-center justify-center font-display font-semibold transition-all duration-300 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none select-none';
+    const [ripples, setRipples] = useState<Ripple[]>([]);
+
+    const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (disabled || isLoading) return;
+
+      const button = e.currentTarget;
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+      const newRipple = { id: Date.now(), x, y, size };
+
+      setRipples((prev) => [...prev, newRipple]);
+
+      if (onMouseDown) {
+        onMouseDown(e);
+      }
+    };
+
+    useEffect(() => {
+      if (ripples.length > 0) {
+        const timeout = setTimeout(() => {
+          setRipples((prev) => prev.slice(1));
+        }, 600);
+        return () => clearTimeout(timeout);
+      }
+      return undefined;
+    }, [ripples]);
+
+    const baseStyles = 'inline-flex items-center justify-center font-display font-semibold transition-all duration-300 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none select-none relative overflow-hidden hover:scale-[1.03] active:scale-95';
     
     const variants = {
       primary: 'bg-primary text-white hover:bg-primary-hover focus:ring-primary shadow-marvel-glow',
       secondary: 'bg-secondary text-background hover:bg-secondary-hover focus:ring-secondary shadow-dc-glow',
       marvel: 'bg-accent-marvel text-white hover:bg-primary-hover focus:ring-accent-marvel shadow-marvel-glow',
       dc: 'bg-accent-dc text-white hover:bg-accent-dc/90 focus:ring-accent-dc shadow-dc-glow',
-      outline: 'border border-surface-border text-text-primary hover:bg-surface-100 hover:text-white focus:ring-surface-border',
-      ghost: 'text-text-secondary hover:bg-surface-100 hover:text-white focus:ring-surface-border',
+      outline: 'border border-surface-border text-text-primary hover:bg-surface-hover/30 hover:text-white focus:ring-surface-border',
+      ghost: 'text-text-secondary hover:bg-surface-hover/30 hover:text-white focus:ring-surface-border',
       glass: 'glass-panel text-white hover:bg-surface-hover/50 hover:border-text-secondary/20 focus:ring-surface-border',
     };
 
@@ -49,11 +86,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         type={type}
         className={cn(baseStyles, variants[variant], sizes[size], className)}
         disabled={disabled || isLoading}
+        onMouseDown={handleMouseDown}
         {...props}
       >
+        {/* Click ripples */}
+        {ripples.map((ripple) => (
+          <span
+            key={ripple.id}
+            className="animate-ripple"
+            style={{
+              left: ripple.x,
+              top: ripple.y,
+              width: ripple.size,
+              height: ripple.size,
+            }}
+          />
+        ))}
+
         {isLoading && (
           <svg
-            className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
+            className="animate-spin -ml-1 mr-2 h-4 w-4 text-current relative z-10"
             fill="none"
             viewBox="0 0 24 24"
           >
@@ -72,9 +124,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             />
           </svg>
         )}
-        {!isLoading && leftIcon && <span className="mr-2 inline-flex">{leftIcon}</span>}
-        {children}
-        {!isLoading && rightIcon && <span className="ml-2 inline-flex">{rightIcon}</span>}
+        {!isLoading && leftIcon && <span className="mr-2 inline-flex relative z-10">{leftIcon}</span>}
+        <span className="relative z-10">{children}</span>
+        {!isLoading && rightIcon && <span className="ml-2 inline-flex relative z-10">{rightIcon}</span>}
       </button>
     );
   }

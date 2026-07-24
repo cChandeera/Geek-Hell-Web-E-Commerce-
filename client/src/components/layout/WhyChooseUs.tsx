@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Sparkles, ShieldCheck, Zap, Truck } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { Card, CardContent } from '../common/Card';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface FeatureItem {
   id: string;
@@ -11,6 +17,9 @@ interface FeatureItem {
 }
 
 export const WhyChooseUs: React.FC = () => {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+
   const features: FeatureItem[] = [
     {
       id: 'feature-customizer',
@@ -42,6 +51,88 @@ export const WhyChooseUs: React.FC = () => {
     },
   ];
 
+  // ScrollTrigger entrance animation for why cards
+  useGSAP(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    if (reducedMotion) {
+      gsap.set('.gsap-why-card', { y: 0, opacity: 1 });
+      return;
+    }
+
+    gsap.fromTo(
+      grid.querySelectorAll('.gsap-why-card'),
+      { y: 50, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: grid,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  }, { scope: gridRef, dependencies: [reducedMotion] });
+
+  // Hover animations using GSAP
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reducedMotion) return;
+    const card = e.currentTarget;
+    const icon = card.querySelector('.gsap-why-icon');
+    
+    gsap.killTweensOf([card, icon]);
+
+    // Lift card and apply deep shadow
+    gsap.to(card, {
+      y: -6,
+      borderColor: 'rgba(255, 255, 255, 0.12)',
+      boxShadow: '0 12px 30px rgba(0, 0, 0, 0.4)',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+
+    // Slightly rotate the icon wrapper
+    if (icon) {
+      gsap.to(icon, {
+        rotation: 12,
+        scale: 1.05,
+        duration: 0.4,
+        ease: 'back.out(1.5)',
+      });
+    }
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reducedMotion) return;
+    const card = e.currentTarget;
+    const icon = card.querySelector('.gsap-why-icon');
+
+    gsap.killTweensOf([card, icon]);
+
+    // Reset card translation and borders
+    gsap.to(card, {
+      y: 0,
+      borderColor: 'rgba(255, 255, 255, 0.05)',
+      boxShadow: 'none',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+
+    if (icon) {
+      gsap.to(icon, {
+        rotation: 0,
+        scale: 1.0,
+        duration: 0.4,
+        ease: 'power2.out',
+      });
+    }
+  };
+
   return (
     <section className="py-24 bg-[#050507] border-b border-surface-border relative z-10 select-none px-6">
       <div className="max-w-7xl mx-auto">
@@ -60,32 +151,38 @@ export const WhyChooseUs: React.FC = () => {
         </div>
 
         {/* 4-Column Responsive Features Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature) => (
-            <Card
+            <div
               key={feature.id}
-              variant="glass-card"
-              className="hover:-translate-y-1 hover:border-white/10 transition-all duration-300 select-none flex flex-col h-full border border-white/5"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              className="gsap-why-card h-full"
             >
-              <CardContent className="p-8 flex flex-col gap-5 items-center text-center lg:items-start lg:text-left h-full justify-between">
-                
-                {/* Icon Wrapper with Custom Glow */}
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-transform duration-500 hover:scale-105 ${feature.iconGlowClass}`}>
-                  {feature.icon}
-                </div>
+              <Card
+                variant="glass-card"
+                className="select-none flex flex-col h-full border border-white/5"
+              >
+                <CardContent className="p-8 flex flex-col gap-5 items-center text-center lg:items-start lg:text-left h-full justify-between">
+                  
+                  {/* Icon Wrapper with Custom Glow */}
+                  <div className={`gsap-why-icon w-12 h-12 rounded-2xl flex items-center justify-center border ${feature.iconGlowClass} origin-center`}>
+                    {feature.icon}
+                  </div>
 
-                {/* Info */}
-                <div className="flex flex-col gap-2.5 flex-grow">
-                  <h3 className="text-sm font-semibold text-white tracking-wide uppercase font-display">
-                    {feature.title}
-                  </h3>
-                  <p className="text-xs text-text-secondary leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
+                  {/* Info */}
+                  <div className="flex flex-col gap-2.5 flex-grow">
+                    <h3 className="text-sm font-semibold text-white tracking-wide uppercase font-display">
+                      {feature.title}
+                    </h3>
+                    <p className="text-xs text-text-secondary leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
 
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           ))}
         </div>
 

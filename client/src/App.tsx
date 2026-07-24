@@ -17,6 +17,8 @@ import { AdminCouponsPage } from './pages/Admin/AdminCouponsPage';
 import { AdminReviewsPage } from './pages/Admin/AdminReviewsPage';
 import { AdminSettingsPage } from './pages/Admin/AdminSettingsPage';
 import { AdminProfilePage } from './pages/Admin/AdminProfilePage';
+import { HomePage } from './pages/Home/HomePage';
+import { CustomizerPage } from './pages/Customizer/CustomizerPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +35,12 @@ export const App: React.FC = () => {
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       <BrowserRouter>
         <Routes>
+          {/* Public Storefront Landing Page */}
+          <Route path="/" element={<HomePage />} />
+
+          {/* 3D Customizer Studio */}
+          <Route path="/customizer" element={<CustomizerPage />} />
+
           {/* Protected Admin Control Center */}
           <Route path="/admin" element={<AdminGuard />}>
             <Route element={<AdminLayout />}>

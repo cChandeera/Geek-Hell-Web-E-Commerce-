@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { ProductItem } from '../../types';
 import { ProductCard } from './ProductCard';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export interface FeaturedProductsProps {
   products?: ProductItem[];
@@ -83,6 +89,37 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   products = MOCK_PRODUCTS,
   onCustomize,
 }) => {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+
+  // ScrollTrigger stagger reveal of product cards
+  useGSAP(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    if (reducedMotion) {
+      gsap.set('.gsap-product-card-wrap', { y: 0, opacity: 1 });
+      return;
+    }
+
+    gsap.fromTo(
+      grid.querySelectorAll('.gsap-product-card-wrap'),
+      { y: 60, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: grid,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  }, { scope: gridRef, dependencies: [reducedMotion] });
+
   return (
     <section className="py-24 bg-[#050507] border-b border-surface-border relative z-10 select-none px-6">
       <div className="max-w-7xl mx-auto">
@@ -103,13 +140,14 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
         </div>
 
         {/* 4-Column Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onCustomize={onCustomize}
-            />
+            <div key={product.id} className="gsap-product-card-wrap">
+              <ProductCard
+                product={product}
+                onCustomize={onCustomize}
+              />
+            </div>
           ))}
         </div>
 
