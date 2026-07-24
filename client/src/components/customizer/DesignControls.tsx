@@ -1,5 +1,5 @@
-import React from 'react';
-import { Eye, EyeOff, ArrowUp, ArrowDown, Copy, Trash, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { Eye, EyeOff, ArrowUp, ArrowDown, Copy, Trash, Plus, Type } from 'lucide-react';
 import { useCustomizerStore } from '../../store/customizerStore';
 import { cn } from '../../utils/cn';
 
@@ -96,6 +96,7 @@ export const DesignControls: React.FC = () => {
           <button
             onClick={handleAddNewLayer}
             className="flex items-center gap-1 text-[9px] font-extrabold uppercase text-primary hover:text-white px-2 py-1 border border-primary/20 bg-primary/5 hover:bg-primary/20 rounded-lg transition-all duration-300 cursor-pointer select-none"
+            title="Add Image Layer"
           >
             <Plus className="w-2.5 h-2.5" />
             Add Layer
@@ -122,11 +123,18 @@ export const DesignControls: React.FC = () => {
                   )}
                 >
                   <div className="flex items-center gap-2 truncate pr-2">
-                    <img
-                      src={layer.url}
-                      className="w-5 h-5 object-contain rounded bg-black/40 border border-white/5 flex-shrink-0"
-                      alt="layer-thumbnail"
-                    />
+                    {/* Thumbnail: text badge vs image */}
+                    {layer.type === 'text' ? (
+                      <div className="w-5 h-5 rounded bg-blue-400/15 border border-blue-400/20 flex items-center justify-center flex-shrink-0">
+                        <Type className="w-3 h-3 text-blue-400" />
+                      </div>
+                    ) : (
+                      <img
+                        src={layer.url}
+                        className="w-5 h-5 object-contain rounded bg-black/40 border border-white/5 flex-shrink-0"
+                        alt="layer-thumbnail"
+                      />
+                    )}
                     <span className="font-semibold truncate">{layer.name}</span>
                   </div>
 

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useGLTF, Decal } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, ThreeEvent } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useCustomizerStore } from '../../store/customizerStore';
 import { animate } from 'framer-motion';
@@ -25,7 +25,7 @@ export const CustomizerShirt: React.FC = () => {
   const setIsDragging = useCustomizerStore((s) => s.setIsDragging);
 
   // Directly drag design calculations
-  const updatePosition = (e: any) => {
+  const updatePosition = (e: ThreeEvent<PointerEvent>) => {
     if (!groupRef.current) return;
     const localPoint = groupRef.current.worldToLocal(e.point.clone());
     // Clamp the layout offset to matching [-0.2, 0.2] slider range
@@ -34,7 +34,7 @@ export const CustomizerShirt: React.FC = () => {
     setDesignPosition(clampedX, clampedY);
   };
 
-  const handlePointerDown = (e: any) => {
+  const handlePointerDown = (e: ThreeEvent<PointerEvent>) => {
     const state = useCustomizerStore.getState();
     const activeDesign = state.currentView === 'front' ? state.frontDesign : state.backDesign;
     const activeLayer = activeDesign.layers.find((l) => l.id === activeDesign.activeLayerId);
@@ -45,7 +45,7 @@ export const CustomizerShirt: React.FC = () => {
     updatePosition(e);
   };
 
-  const handlePointerMove = (e: any) => {
+  const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
     if (isDragging) {
       e.stopPropagation();
       updatePosition(e);
@@ -118,7 +118,7 @@ export const CustomizerShirt: React.FC = () => {
         />
 
         {/* Front Decal Overlays */}
-        {frontDesign.layers.map((layer) => (
+        {frontDesign.layers.map((layer, idx) => (
           <DecalOverlay
             key={layer.id}
             designUrl={layer.visible ? layer.url : null}
@@ -130,11 +130,12 @@ export const CustomizerShirt: React.FC = () => {
             flipY={layer.flipY}
             opacity={layer.visible ? layer.opacity : 0}
             isBack={false}
+            layerIndex={idx}
           />
         ))}
 
         {/* Back Decal Overlays */}
-        {backDesign.layers.map((layer) => (
+        {backDesign.layers.map((layer, idx) => (
           <DecalOverlay
             key={layer.id}
             designUrl={layer.visible ? layer.url : null}
@@ -146,6 +147,7 @@ export const CustomizerShirt: React.FC = () => {
             flipY={layer.flipY}
             opacity={layer.visible ? layer.opacity : 0}
             isBack={true}
+            layerIndex={idx}
           />
         ))}
       </mesh>
@@ -163,6 +165,8 @@ interface DecalOverlayProps {
   flipY: boolean;
   opacity: number;
   isBack: boolean;
+  /** Array index of this layer — higher index renders on top */
+  layerIndex: number;
 }
 
 /** Decal Overlay supporting smooth cross-fade transitions, asynchronous loading, and smooth interpolation controls */
@@ -176,6 +180,7 @@ const DecalOverlay: React.FC<DecalOverlayProps> = ({
   flipY,
   opacity,
   isBack,
+  layerIndex,
 }) => {
   const [currentTexture, setCurrentTexture] = useState<THREE.Texture | null>(null);
   const [prevTexture, setPrevTexture] = useState<THREE.Texture | null>(null);
@@ -237,6 +242,12 @@ const DecalOverlay: React.FC<DecalOverlayProps> = ({
       if (loadingUrl.current !== designUrl) return;
 
       loadedTexture.colorSpace = THREE.SRGBColorSpace;
+      // ── Sharp texture settings — critical for crisp text decals ──
+      loadedTexture.minFilter = THREE.LinearMipmapLinearFilter;
+      loadedTexture.magFilter = THREE.LinearFilter;
+      loadedTexture.anisotropy = 16; // Maximum sharpness at oblique angles
+      loadedTexture.generateMipmaps = true;
+      loadedTexture.needsUpdate = true;
 
       const activeCurrent = currentTextureRef.current;
       if (activeCurrent) {
@@ -306,6 +317,8 @@ const DecalOverlay: React.FC<DecalOverlayProps> = ({
   if (!currentTexture && !prevTexture) return null;
 
   const rotRad = (smoothProps.rotation * Math.PI) / 180;
+  // Higher layerIndex = more negative offset = renders on top of lower layers
+  const polyOffset = -(4 + layerIndex * 3);
 
   return (
     <>
@@ -324,9 +337,9 @@ const DecalOverlay: React.FC<DecalOverlayProps> = ({
             metalness={0.04}
             envMapIntensity={0.9}
             polygonOffset
-            polygonOffsetFactor={-4}
+            polygonOffsetFactor={polyOffset}
             depthTest={true}
-            depthWrite={true}
+            depthWrite={false}
           />
         </Decal>
       )}
@@ -346,9 +359,9 @@ const DecalOverlay: React.FC<DecalOverlayProps> = ({
             metalness={0.04}
             envMapIntensity={0.9}
             polygonOffset
-            polygonOffsetFactor={-4}
+            polygonOffsetFactor={polyOffset}
             depthTest={true}
-            depthWrite={true}
+            depthWrite={false}
           />
         </Decal>
       )}

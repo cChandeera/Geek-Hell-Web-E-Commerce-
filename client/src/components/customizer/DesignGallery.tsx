@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Shield, Zap, Sparkles, Gamepad2 } from 'lucide-react';
+import { Search, Shield, Zap, Sparkles, Gamepad2, Type } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCustomizerStore } from '../../store/customizerStore';
 import designsData from '../../constants/designs.json';
 import { cn } from '../../utils/cn';
+import { TextLayerPanel } from './TextLayerPanel';
 
 interface Design {
   id: string;
@@ -46,6 +47,7 @@ const CATEGORIES = [
 export const DesignGallery: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Marvel');
+  const [showTextPanel, setShowTextPanel] = useState(false);
 
   // Zustand Store values
   const uploadedDesign = useCustomizerStore((s) => s.uploadedDesign);
@@ -120,6 +122,7 @@ export const DesignGallery: React.FC = () => {
       <div className="flex gap-4 flex-1 overflow-hidden min-h-[340px]">
         {/* Left Categories Sidebar */}
         <div className="w-[64px] flex flex-col gap-2.5 border-r border-white/5 pr-2.5 flex-shrink-0">
+          {/* Category buttons */}
           {CATEGORIES.map((cat) => {
             const isActive = selectedCategory === cat.id;
             return (
@@ -141,6 +144,17 @@ export const DesignGallery: React.FC = () => {
               </button>
             );
           })}
+
+          {/* Text Layer button — below Gaming */}
+          <div className="pt-1.5 border-t border-white/8 mt-0.5">
+            <button
+              onClick={() => setShowTextPanel(true)}
+              className="w-full flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-[9px] font-bold uppercase tracking-wider transition-all duration-300 gap-1.5 cursor-pointer select-none text-center border-blue-400/25 bg-blue-400/5 text-blue-400 hover:bg-blue-400/15 hover:border-blue-400/50 hover:shadow-[0_0_12px_rgba(96,165,250,0.2)]"
+            >
+              <Type className="w-4 h-4" />
+              <span className="scale-90">Text</span>
+            </button>
+          </div>
         </div>
 
         {/* Right Scrollable Grid of Thumbnails */}
@@ -186,6 +200,9 @@ export const DesignGallery: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Text Layer Panel */}
+      {showTextPanel && <TextLayerPanel onClose={() => setShowTextPanel(false)} />}
     </div>
   );
 };

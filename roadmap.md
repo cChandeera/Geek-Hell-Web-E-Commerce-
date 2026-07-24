@@ -77,6 +77,7 @@ For the Geek Hell platform, we are combining this with **feature-driven incremen
 - [x] Interactive 3D canvas dragging, rotation bounds (-180° to 180°), and OrbitControls drag lock (Phase 26).
 - [x] Multi-Layer Design System with add, delete, duplicate, hide, and depth reordering controls (Phase 27).
 - [x] Category-sidebar Design Gallery showing Marvel, DC, Anime, and Gaming with lazy loading (Phase 28).
+- [x] Text Layer System — `generateTextDataUrl()` canvas-to-texture (4× supersampled), `addTextLayer()` store action, `TextLayerPanel` slide-in editor with Font/Color/Size/Bold/Italic controls, live 3D shirt preview (debounced 120ms), dynamic `polygonOffsetFactor` per layer index for correct z-ordering, `anisotropy=16` texture sharpness, "Add Text" button in DesignGallery sidebar below Gaming category (Phase 29).
 - [ ] Dynamic off-screen Canvas compositor to generate 2048x2048 high-res print files.
 - [ ] Cloudinary design screenshot saving API.
 

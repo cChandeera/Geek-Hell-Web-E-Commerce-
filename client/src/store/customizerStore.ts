@@ -15,6 +15,69 @@ export interface DesignLayer {
   opacity: number;
   visible: boolean;
   name: string;
+  // ── Text layer metadata (optional — undefined means image layer) ──
+  type?: 'image' | 'text';
+  textContent?: string;
+  fontFamily?: string;
+  textColor?: string;
+  fontSize?: number;
+  isBold?: boolean;
+  isItalic?: boolean;
+}
+
+/** Generates a high-resolution canvas PNG data URL from text parameters.
+ *  Renders at 4× super-sample so text stays sharp when mapped as a decal
+ *  on the 3D shirt surface.
+ */
+export function generateTextDataUrl(
+  text: string,
+  fontFamily: string,
+  fontSize: number,
+  color: string,
+  isBold: boolean,
+  isItalic: boolean
+): string {
+  // ── 4× super-sample: render at 4x size so texture is crisp on the shirt ──
+  const SCALE = 4;
+  const padding = 48 * SCALE;
+  const scaledFontSize = fontSize * SCALE;
+  const lineHeight = scaledFontSize * 1.3;
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d', { alpha: true })!;
+
+  // Enable high-quality rendering
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  const fontStyle = `${isItalic ? 'italic ' : ''}${isBold ? 'bold ' : ''}${scaledFontSize}px ${fontFamily}, sans-serif`;
+
+  // Measure text at scaled size
+  ctx.font = fontStyle;
+  const lines = text.split('\n').filter((l) => l.length > 0);
+  if (lines.length === 0) lines.push('');
+
+  const maxWidth = Math.max(...lines.map((l) => ctx.measureText(l).width));
+
+  canvas.width  = Math.ceil(maxWidth) + padding * 2;
+  canvas.height = Math.ceil(lineHeight * lines.length) + padding * 2;
+
+  // Canvas resize resets the context — re-apply all settings
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.font = fontStyle;
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // Draw each line
+  lines.forEach((line, i) => {
+    const x = canvas.width / 2;
+    const y = padding + lineHeight * i + lineHeight / 2;
+    ctx.fillText(line, x, y);
+  });
+
+  return canvas.toDataURL('image/png');
 }
 
 export interface SideDesign {
@@ -69,6 +132,14 @@ export interface CustomizerState {
 
   // Layer management actions
   addLayer: (url: string, name?: string) => void;
+  addTextLayer: (
+    text: string,
+    fontFamily: string,
+    fontSize: number,
+    color: string,
+    isBold: boolean,
+    isItalic: boolean
+  ) => void;
   deleteLayer: (id: string) => void;
   duplicateLayer: (id: string) => void;
   toggleLayerVisibility: (id: string) => void;
@@ -285,6 +356,49 @@ export const useCustomizerStore = create<CustomizerState>((set) => ({
       const updatedLayers = [...side.layers, newLayer];
       return {
         uploadedDesign: url,
+        designScale: newLayer.scale,
+        designRotation: newLayer.rotation,
+        designPositionX: newLayer.posX,
+        designPositionY: newLayer.posY,
+        designFlipX: newLayer.flipX,
+        designFlipY: newLayer.flipY,
+        designOpacity: newLayer.opacity,
+        designVisible: newLayer.visible,
+        frontDesign: isFront ? { layers: updatedLayers, activeLayerId: newId } : state.frontDesign,
+        backDesign: !isFront ? { layers: updatedLayers, activeLayerId: newId } : state.backDesign,
+      };
+    }),
+
+  addTextLayer: (text, fontFamily, fontSize, color, isBold, isItalic) =>
+    set((state) => {
+      const isFront = state.currentView === 'front';
+      const side = isFront ? state.frontDesign : state.backDesign;
+      const dataUrl = generateTextDataUrl(text, fontFamily, fontSize, color, isBold, isItalic);
+      const newId = `text-layer-${Date.now()}`;
+      const label = text.length > 12 ? `${text.slice(0, 12)}…` : text;
+      const newLayer: DesignLayer = {
+        id: newId,
+        url: dataUrl,
+        scale: 0.18,
+        rotation: 0,
+        posX: 0,
+        posY: 0,
+        flipX: false,
+        flipY: false,
+        opacity: 1.0,
+        visible: true,
+        name: `"${label}"`,
+        type: 'text',
+        textContent: text,
+        fontFamily,
+        textColor: color,
+        fontSize,
+        isBold,
+        isItalic,
+      };
+      const updatedLayers = [...side.layers, newLayer];
+      return {
+        uploadedDesign: dataUrl,
         designScale: newLayer.scale,
         designRotation: newLayer.rotation,
         designPositionX: newLayer.posX,
