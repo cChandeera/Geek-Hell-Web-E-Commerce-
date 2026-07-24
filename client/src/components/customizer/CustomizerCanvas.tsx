@@ -10,6 +10,7 @@ import {
 import * as THREE from 'three';
 import { CustomizerShirt } from './CustomizerShirt';
 import { Loader } from '../common/Loader';
+import { useCustomizerStore } from '../../store/customizerStore';
 
 /* ─── AutoFit ─── */
 interface AutoFitProps {
@@ -76,6 +77,7 @@ const CanvasLoader: React.FC = () => (
 /* ─── Main Canvas ─── */
 export const CustomizerCanvas: React.FC = () => {
   const [shadowY, setShadowY] = useState(-0.85);
+  const isDragging = useCustomizerStore((s) => s.isDragging);
 
   return (
     <div className="w-full h-full relative">
@@ -142,8 +144,8 @@ export const CustomizerCanvas: React.FC = () => {
           />
 
           <OrbitControls
-            enableZoom={true}
-            enableRotate={true}
+            enableZoom={!isDragging}
+            enableRotate={!isDragging}
             enablePan={false}
             enableDamping={true}
             dampingFactor={0.04}

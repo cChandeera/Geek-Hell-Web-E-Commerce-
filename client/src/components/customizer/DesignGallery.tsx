@@ -28,6 +28,8 @@ export const DesignGallery: React.FC = () => {
   const setDesign = useCustomizerStore((s) => s.setDesign);
   const favorites = useCustomizerStore((s) => s.favorites);
   const toggleFavorite = useCustomizerStore((s) => s.toggleFavorite);
+  const currentView = useCustomizerStore((s) => s.currentView);
+  const setCurrentView = useCustomizerStore((s) => s.setCurrentView);
 
   // Filtered designs logic
   const filteredDesigns = useMemo(() => {
@@ -77,6 +79,32 @@ export const DesignGallery: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-5 h-full">
+      {/* View Selector (Front / Back) */}
+      <div className="flex flex-col gap-2">
+        <span className="text-[9px] font-bold uppercase tracking-wider text-text-muted select-none">
+          Print Placement
+        </span>
+        <div className="flex bg-white/[0.02] border border-white/5 p-1 rounded-xl gap-1">
+          {(['front', 'back'] as const).map((view) => {
+            const isActive = currentView === view;
+            return (
+              <button
+                key={view}
+                onClick={() => setCurrentView(view)}
+                className={cn(
+                  'flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all duration-300 cursor-pointer select-none text-center border',
+                  isActive
+                    ? 'border-primary/30 bg-primary/15 text-primary shadow-[0_0_12px_rgba(229,9,20,0.25)]'
+                    : 'border-white/5 bg-white/[0.01] text-text-muted hover:text-white'
+                )}
+              >
+                {view} Side
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Search Input */}
       <div className="relative">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />

@@ -5,7 +5,7 @@
     "category": "Marvel",
     "character": "Iron Man",
     "thumbnailUrl": "https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=200&auto=format&fit=crop",
-    "textureUrl": "https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?q=80&w=600&auto=format&fit=crop"
+    "textureUrl": "/designs/m-ironman-1.png"
   },
   {
     "id": "m-ironman-2",
@@ -13,7 +13,7 @@
     "category": "Marvel",
     "character": "Iron Man",
     "thumbnailUrl": "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=200&auto=format&fit=crop",
-    "textureUrl": "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=600&auto=format&fit=crop"
+    "textureUrl": "/designs/m-ironman-2.png"
   },
   {
     "id": "m-spiderman-1",
@@ -21,7 +21,7 @@
     "category": "Marvel",
     "character": "Spider-Man",
     "thumbnailUrl": "https://images.unsplash.com/photo-1604200213928-ba3cf4fc8436?q=80&w=200&auto=format&fit=crop",
-    "textureUrl": "https://images.unsplash.com/photo-1604200213928-ba3cf4fc8436?q=80&w=600&auto=format&fit=crop"
+    "textureUrl": "/designs/m-spiderman-1.png"
   },
   {
     "id": "m-spiderman-2",
@@ -29,7 +29,7 @@
     "category": "Marvel",
     "character": "Spider-Man",
     "thumbnailUrl": "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=200&auto=format&fit=crop",
-    "textureUrl": "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=600&auto=format&fit=crop"
+    "textureUrl": "/designs/m-spiderman-2.png"
   },
   {
     "id": "d-batman-1",
@@ -37,7 +37,7 @@
     "category": "DC",
     "character": "Batman",
     "thumbnailUrl": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=200&auto=format&fit=crop",
-    "textureUrl": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=600&auto=format&fit=crop"
+    "textureUrl": "/designs/d-batman-1.png"
   },
   {
     "id": "d-batman-2",
@@ -45,7 +45,7 @@
     "category": "DC",
     "character": "Batman",
     "thumbnailUrl": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=200&auto=format&fit=crop",
-    "textureUrl": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600&auto=format&fit=crop"
+    "textureUrl": "/designs/d-batman-2.png"
   },
   {
     "id": "d-superman-1",
@@ -53,7 +53,7 @@
     "category": "DC",
     "character": "Superman",
     "thumbnailUrl": "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=200&auto=format&fit=crop",
-    "textureUrl": "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=600&auto=format&fit=crop"
+    "textureUrl": "/designs/d-superman-1.png"
   },
   {
     "id": "d-superman-2",
@@ -61,6 +61,6 @@
     "category": "DC",
     "character": "Superman",
     "thumbnailUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=200&auto=format&fit=crop",
-    "textureUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600&auto=format&fit=crop"
+    "textureUrl": "/designs/d-superman-2.png"
   }
 ]
