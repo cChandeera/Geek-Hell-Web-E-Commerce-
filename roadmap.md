@@ -71,9 +71,12 @@ For the Geek Hell platform, we are combining this with **feature-driven incremen
 ## NEXT UP: Remaining Stages
 
 ### [Phase 08] Interactive 3D Designer Sandbox (In-Progress)
-- [ ] 3D Canvas Raycasting selection handles.
-- [ ] Decal texture projection on mesh surfaces (Front/Back/Sleeves).
-- [ ] Decal transform controls (Position, Rotation, Scale).
+- [x] Live 3D Shirt Preview with custom texture projection on surface (Phase 23).
+- [x] Advanced Design Controls sidebar panel (Scale, Rotation, Position X/Y, Flip H/V, Reset) (Phase 24).
+- [x] Front & Back Print Placement System with smooth eased 180° Y-rotation and separate design states (Phase 25).
+- [x] Interactive 3D canvas dragging, rotation bounds (-180° to 180°), and OrbitControls drag lock (Phase 26).
+- [x] Multi-Layer Design System with add, delete, duplicate, hide, and depth reordering controls (Phase 27).
+- [x] Category-sidebar Design Gallery showing Marvel, DC, Anime, and Gaming with lazy loading (Phase 28).
 - [ ] Dynamic off-screen Canvas compositor to generate 2048x2048 high-res print files.
 - [ ] Cloudinary design screenshot saving API.
 
