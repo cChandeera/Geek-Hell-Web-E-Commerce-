@@ -66,9 +66,7 @@ export const App: React.FC = () => {
             path="*"
             element={
               <div className="min-h-screen bg-[#09090b] text-white flex flex-col items-center justify-center p-8 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center font-black text-2xl mb-4 shadow-lg shadow-red-600/30">
-                  GH
-                </div>
+                <img src="/geekhell.png" alt="Geek Hell Logo" className="w-16 h-16 object-contain mb-4" />
                 <h1 className="text-3xl font-extrabold mb-2">GEEK HELL PLATFORM</h1>
                 <p className="text-zinc-400 text-sm max-w-md mb-6">
                   Admin Control Center initialized. Navigate to <code className="text-red-400">/admin/dashboard</code> to view dashboard analytics.

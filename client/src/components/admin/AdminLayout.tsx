@@ -55,9 +55,7 @@ export const AdminLayout: React.FC = () => {
         {/* Brand Header */}
         <div className="p-6 border-b border-zinc-800/80 flex items-center justify-between">
           <Link to="/admin/dashboard" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center font-black text-white shadow-lg shadow-red-600/30">
-              GH
-            </div>
+            <img src="/geekhell.png" alt="Geek Hell Logo" className="w-9 h-9 object-contain" />
             <div>
               <span className="font-extrabold tracking-wider text-lg text-white block leading-none">
                 GEEK <span className="text-red-500">HELL</span>

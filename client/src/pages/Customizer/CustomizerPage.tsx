@@ -37,9 +37,7 @@ export const CustomizerPage: React.FC = () => {
         </Link>
 
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center font-black text-[10px] text-white shadow-[0_0_10px_rgba(229,9,20,0.3)]">
-            GH
-          </div>
+          <img src="/geekhell.png" alt="Geek Hell Logo" className="w-7 h-7 object-contain" />
           <span className="text-xs font-black uppercase tracking-[0.2em] text-white font-display">
             3D <span className="text-primary">Customizer</span>
           </span>

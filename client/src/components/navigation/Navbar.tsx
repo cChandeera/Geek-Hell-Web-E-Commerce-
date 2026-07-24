@@ -169,9 +169,7 @@ export const Navbar: React.FC = () => {
             to="/"
             className="gsap-nav-logo flex items-center gap-2.5 font-display font-black text-lg tracking-widest text-white select-none hover:opacity-90 group"
           >
-            <div className="w-8 h-8 rounded-lg bg-primary hover:bg-primary-hover flex items-center justify-center font-black text-sm text-white shadow-marvel-glow group-hover:scale-105 transition-all duration-300">
-              GH
-            </div>
+            <img src="/geekhell.png" alt="Geek Hell Logo" className="w-8 h-8 object-contain group-hover:scale-105 transition-all duration-300" />
             <span className="hidden sm:inline-block tracking-[0.2em] font-extrabold uppercase">
               GEEK <span className="text-primary group-hover:text-primary/90 transition-colors duration-300">HELL</span>
             </span>
