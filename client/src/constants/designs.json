@@ -62,5 +62,37 @@
     "character": "Superman",
     "thumbnailUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=200&auto=format&fit=crop",
     "textureUrl": "/designs/d-superman-2.png"
+  },
+  {
+    "id": "a-goku-1",
+    "name": "Sayan Kanji Symbol",
+    "category": "Anime",
+    "character": "Goku",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=200&auto=format&fit=crop",
+    "textureUrl": "/designs/a-goku-1.png"
+  },
+  {
+    "id": "a-naruto-1",
+    "name": "Hidden Leaf Crest",
+    "category": "Anime",
+    "character": "Naruto",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=200&auto=format&fit=crop",
+    "textureUrl": "/designs/a-naruto-1.png"
+  },
+  {
+    "id": "g-mario-1",
+    "name": "Super Mushroom Icon",
+    "category": "Gaming",
+    "character": "Mario",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=200&auto=format&fit=crop",
+    "textureUrl": "/designs/g-mario-1.png"
+  },
+  {
+    "id": "g-zelda-1",
+    "name": "Hyrule Triforce Emblem",
+    "category": "Gaming",
+    "character": "Zelda",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=200&auto=format&fit=crop",
+    "textureUrl": "/designs/g-zelda-1.png"
   }
 ]
